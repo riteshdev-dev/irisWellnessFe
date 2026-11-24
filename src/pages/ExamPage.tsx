@@ -22,6 +22,7 @@ interface Paper {
     expires_at: string | null;
     submitted_at: string | null;
     title?: string;
+    course_title?: string;
   };
   questions: Question[];
   options: Option[];
@@ -657,7 +658,7 @@ export function ExamPage() {
       {/* HEADER WITH TITLE & TIMER */}
       <header className="ev-header">
         <div>
-          <div className="ev-kicker">Examination · Online Certification</div>
+          <div className="ev-kicker">{paper.attempt?.course_title ? `${paper.attempt.course_title} · ` : ""}Examination</div>
           <h1 className="ev-title">{paper.attempt?.title || "Course Assessment"}</h1>
         </div>
 
@@ -706,9 +707,24 @@ export function ExamPage() {
             return (
               <label
                 key={option.id}
+                tabIndex={0}
                 className={`ev-option ${isSelected ? "is-selected" : ""}`}
                 onClick={() => setAnswers((current) => ({ ...current, [question.id]: option.id }))}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setAnswers((current) => ({ ...current, [question.id]: option.id }));
+                  }
+                }}
               >
+                <input
+                  type="radio"
+                  name={`question-${question.id}`}
+                  checked={isSelected}
+                  onChange={() => {}}
+                  style={{ position: "absolute", opacity: 0, pointerEvents: "none" }}
+                  aria-label={option.option_text}
+                />
                 <div className="ev-option-badge">{letter}</div>
                 <span className="ev-option-text">{option.option_text}</span>
                 <div className="ev-option-check">
