@@ -1,6 +1,6 @@
-# Spa Therapist Certification Portal — Frontend (`spaTherapistFe`)
+# Iris Wellness — Frontend Client (`spaTherapistFe`)
 
-A modern, responsive, role-based web application for the **Spa Therapist Certification Portal**, built with **React 19**, **TypeScript**, and **Vite**. The portal provides end-to-end certification pathways for wellness therapists, comprehensive online video and PDF course learning, interactive examinations with real-time timers, automatic certificate generation, and an enterprise administration console.
+A modern, responsive, role-based web application for **Iris Wellness**, built with **React 19**, **TypeScript**, and **Vite**. The portal provides end-to-end certification pathways for wellness therapists, comprehensive online video and PDF course learning, interactive examinations with real-time timers, automatic certificate generation, and an enterprise administration console.
 
 ---
 
@@ -324,4 +324,4 @@ The examination interface (`ExamPage.tsx`) is designed for maximum clarity and s
 
 ## License
 
-Confidential and proprietary. Developed for the Spa Therapist Certification Portal.
+Confidential and proprietary. Developed for Iris Wellness.

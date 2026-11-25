@@ -7,10 +7,10 @@ import { useAuth } from "../context/useAuth.ts";
 import { homePath } from "../lib/paths.ts";
 import type { PendingOtp } from "../types/auth.ts";
 
-const PENDING_KEY = "spa-otp-pending";
+const PENDING_KEY = "iriswellness-otp-pending";
 
 function readPending(): PendingOtp | null {
-  const raw = sessionStorage.getItem(PENDING_KEY);
+  const raw = sessionStorage.getItem(PENDING_KEY) ?? sessionStorage.getItem("spa-otp-pending");
   if (!raw) {
     return null;
   }
@@ -267,7 +267,10 @@ export function VerifyOtpPage() {
     try {
       const response = await verifyOtp(pending.challengeToken, otp);
       sessionStorage.removeItem(PENDING_KEY);
+      sessionStorage.removeItem("spa-otp-pending");
+      sessionStorage.removeItem("iriswellness-session-expired");
       sessionStorage.removeItem("spa-session-expired");
+      localStorage.setItem("iriswellness-last-activity", Date.now().toString());
       localStorage.setItem("spa-last-activity", Date.now().toString());
 
       if (response.data?.user) {

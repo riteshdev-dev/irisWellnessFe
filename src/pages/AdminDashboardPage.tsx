@@ -387,7 +387,7 @@ export function AdminDashboardPage() {
       <header className="admin-dashboard-header">
         <div>
           <p className="admin-dashboard-kicker">
-            Administration Overview
+            Iris Wellness · Administration
           </p>
           <h1 className="admin-dashboard-title">
             Admin Dashboard

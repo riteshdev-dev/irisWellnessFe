@@ -200,7 +200,7 @@ async function enroll(courseId: string) {
       <style>{dashboardStyles}</style>
       <header className="ud-top">
         <div>
-          <p className="ud-kicker">Your learning space</p>
+          <p className="ud-kicker">Iris Wellness · Learning Space</p>
           <h1 className="ud-title">Welcome back, {user?.name || "Therapist"}</h1>
           <p className="ud-muted">Track your training, continue learning, and earn certifications.</p>
         </div>

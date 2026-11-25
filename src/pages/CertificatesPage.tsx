@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ApiError } from "../api/client.ts";
+import { API_URL, ApiError } from "../api/client.ts";
 import { portalApi, when } from "../api/portal.ts";
 
 type Certificate = Record<string, unknown>;
@@ -72,6 +72,9 @@ const certificateCss = `
 .cert-v5 .cv-certificate .cv-person{font-size:26px;font-weight:750;color:#175c46;margin:12px 0}
 .cert-v5 .cv-certificate p{font-size:14px;color:#64766d;line-height:1.7}
 .cert-v5 .cv-certificate .cv-course{font-size:20px;font-weight:750;color:#1a3e32;margin:8px 0 18px;overflow-wrap:anywhere}
+.cert-v5 .cv-qr-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;margin:16px auto 14px}
+.cert-v5 .cv-qr-img{width:112px;height:112px;border:1px solid #e5dcc7;border-radius:10px;padding:6px;background:#fff;box-shadow:0 3px 12px rgba(23,92,70,.06)}
+.cert-v5 .cv-qr-caption{font-size:11px;color:#778880;margin-top:6px;font-weight:600;letter-spacing:.02em}
 .cert-v5 .cv-certfoot{border-top:1px solid #e8dfca;padding-top:16px;display:flex;justify-content:space-between;gap:10px;font-size:11px;color:#69786f;flex-wrap:wrap}
 .cert-v5 .cv-dialogactions{display:flex;justify-content:flex-end;gap:10px;padding:0 22px 22px;flex-wrap:wrap}
 .cert-verify-v5{min-height:100vh;background:linear-gradient(135deg,#eaf2ec,#f9f7f1);display:grid;place-items:center;padding:24px}
@@ -137,7 +140,7 @@ export function CertificatesPage() {
     <section className="cert-v5">
       <style>{certificateCss}</style>
       <div className="cv-head">
-        <div><p className="cv-kicker">Learning achievements</p><h1>My Certificates</h1><p className="cv-sub">View, verify and download your earned professional certificates.</p></div>
+        <div><p className="cv-kicker">Learning achievements</p><h1>My Certificates</h1><p className="cv-sub">View and download your earned professional certificates.</p></div>
         <button type="button" className="cv-btn" onClick={() => setReloadKey((key) => key + 1)}>↻ Refresh</button>
       </div>
       {error && <div className="cv-notice" role="alert">{error}</div>}
@@ -164,8 +167,27 @@ export function CertificatesPage() {
       {preview && <div className="cv-overlay" role="presentation" onMouseDown={(e) => { if (e.target === e.currentTarget) setPreview(null); }}>
         <div className="cv-dialog" role="dialog" aria-modal="true" aria-label="Certificate preview">
           <div className="cv-dialoghead"><h2>Certificate Preview</h2><button type="button" className="cv-x" aria-label="Close preview" onClick={() => setPreview(null)}>×</button></div>
-          <div className="cv-certificate"><div className="cv-seal">✦</div><div className="cv-certlabel">Spa Therapist Portal</div><h2>Certificate of Completion</h2><p>This certificate is proudly presented to</p><div className="cv-person">{value(preview.therapist_name) || "Certificate Holder"}</div><p>for successfully completing the course</p><div className="cv-course">{value(preview.course_title)}</div><div className="cv-certfoot"><span>ID: {value(preview.certificate_code)}</span><span>Issued: {preview.issued_at ? when(preview.issued_at) : "—"}</span></div></div>
-          <div className="cv-dialogactions"><a className="cv-btn" href={`/certificates/verify/${encodeURIComponent(value(preview.certificate_code))}`} target="_blank" rel="noopener noreferrer">Verify Certificate ↗</a><button type="button" className="cv-btn cv-btn-primary" disabled={downloading === value(preview.id)} onClick={() => void download(value(preview.id), value(preview.certificate_code))}>↓ Download PDF</button></div>
+          <div className="cv-certificate">
+            <div className="cv-seal">✦</div>
+            <div className="cv-certlabel">Iris Wellness</div>
+            <h2>Certificate of Completion</h2>
+            <p>This certificate is proudly presented to</p>
+            <div className="cv-person">{value(preview.therapist_name) || "Certificate Holder"}</div>
+            <p>for successfully completing the course</p>
+            <div className="cv-course">{value(preview.course_title)}</div>
+            <div className="cv-qr-wrap">
+              <img
+                className="cv-qr-img"
+                src={`${API_URL}/api/certificates/qr/${encodeURIComponent(value(preview.certificate_code))}`}
+                alt="Scan to verify certificate"
+                width="112"
+                height="112"
+              />
+              <span className="cv-qr-caption">Scan to verify this certificate</span>
+            </div>
+            <div className="cv-certfoot"><span>ID: {value(preview.certificate_code)}</span><span>Issued: {preview.issued_at ? when(preview.issued_at) : "—"}</span></div>
+          </div>
+          <div className="cv-dialogactions"><button type="button" className="cv-btn cv-btn-primary" disabled={downloading === value(preview.id)} onClick={() => void download(value(preview.id), value(preview.certificate_code))}>↓ Download PDF</button></div>
         </div>
       </div>}
     </section>
@@ -192,7 +214,7 @@ export function VerifyCertificatePage() {
   return <main className="cert-verify-v5"><style>{certificateCss}</style><article className="cv-verifycard">
     <div className="cv-verifyicon" aria-hidden="true">{loading ? "◌" : error || !record ? "⚠" : "✓"}</div>
     <h1>{loading ? "Checking Certificate" : error || !record ? "Certificate Not Verified" : "Certificate Verified"}</h1>
-    <p className="cv-verifydesc">{loading ? "Please wait while we check this certificate." : error || !record ? (error || "No certificate was found for this code.") : "This certificate has been verified by Spa Therapist Portal."}</p>
+    <p className="cv-verifydesc">{loading ? "Please wait while we check this certificate." : error || !record ? (error || "No certificate was found for this code.") : "This certificate has been verified by Iris Wellness."}</p>
     {record && !error && !loading && <div className="cv-verifyinfo">
       <div className="cv-verifyrow"><span>Therapist</span><strong>{value(record.therapistName)}</strong></div>
       <div className="cv-verifyrow"><span>Course</span><strong>{value(record.courseTitle)}</strong></div>
