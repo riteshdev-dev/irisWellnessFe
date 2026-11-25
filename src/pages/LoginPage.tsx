@@ -13,7 +13,7 @@ import { useAuth } from "../context/useAuth.ts";
 import { homePath } from "../lib/paths.ts";
 import type { PendingOtp } from "../types/auth.ts";
 
-const PENDING_KEY = "spa-otp-pending";
+const PENDING_KEY = "iriswellness-otp-pending";
 
 const loginCSS = `
 .login-page,
@@ -312,12 +312,15 @@ export function LoginPage() {
         "sessionExpired" in location.state &&
         location.state.sessionExpired
     );
-    const fromStorage = typeof sessionStorage !== "undefined" && sessionStorage.getItem("spa-session-expired") === "true";
+    const fromStorage =
+      typeof sessionStorage !== "undefined" &&
+      (sessionStorage.getItem("iriswellness-session-expired") === "true" || sessionStorage.getItem("spa-session-expired") === "true");
     return fromState || fromStorage;
   });
 
   useEffect(() => {
-    if (typeof sessionStorage !== "undefined" && sessionStorage.getItem("spa-session-expired")) {
+    if (typeof sessionStorage !== "undefined") {
+      sessionStorage.removeItem("iriswellness-session-expired");
       sessionStorage.removeItem("spa-session-expired");
     }
   }, []);
