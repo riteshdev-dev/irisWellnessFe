@@ -7,10 +7,10 @@ import { AuthContext, type AuthContextValue } from "./auth-context.ts";
 export const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes = 900,000 ms
 const ACTIVITY_THROTTLE_MS = 2000; // Throttle activity writes to once every 2 seconds
 const CHECK_INTERVAL_MS = 5000; // Check inactivity every 5 seconds
-export const LAST_ACTIVITY_KEY = "spa-last-activity";
-export const LOGOUT_SYNC_KEY = "spa-sync-logout";
-export const SESSION_EXPIRED_KEY = "spa-session-expired";
-const OTP_PENDING_KEY = "spa-otp-pending";
+export const LAST_ACTIVITY_KEY = "iriswellness-last-activity";
+export const LOGOUT_SYNC_KEY = "iriswellness-sync-logout";
+export const SESSION_EXPIRED_KEY = "iriswellness-session-expired";
+const OTP_PENDING_KEY = "iriswellness-otp-pending";
 
 const ACTIVITY_EVENTS: (keyof WindowEventMap)[] = [
   "mousemove",
@@ -144,7 +144,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (typeof BroadcastChannel !== "undefined") {
       try {
-        const channel = new BroadcastChannel("spa-auth-broadcast");
+        const channel = new BroadcastChannel("iriswellness-auth-broadcast");
         broadcastChannelRef.current = channel;
 
         channel.onmessage = (event) => {
@@ -218,8 +218,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const lastActive = raw ? parseInt(raw, 10) : Date.now();
       const elapsed = Date.now() - lastActive;
 
-      // Allows optional override in browser console for local testing: window.__SPA_INACTIVITY_TIMEOUT_MS
+      // Allows optional override in browser console for local testing: window.__IRIS_INACTIVITY_TIMEOUT_MS
       const timeoutLimit =
+        (typeof window !== "undefined" && (window as unknown as { __IRIS_INACTIVITY_TIMEOUT_MS?: number; __SPA_INACTIVITY_TIMEOUT_MS?: number }).__IRIS_INACTIVITY_TIMEOUT_MS) ||
         (typeof window !== "undefined" && (window as unknown as { __SPA_INACTIVITY_TIMEOUT_MS?: number }).__SPA_INACTIVITY_TIMEOUT_MS) ||
         INACTIVITY_TIMEOUT_MS;
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ApiError } from "../api/client.ts";
+import { API_URL, ApiError } from "../api/client.ts";
 import { portalApi, when } from "../api/portal.ts";
 import { ConfirmDialog, EmptyState, Notice, Pager } from "../components/ui.tsx";
 import { toast } from "../components/Toast.tsx";
@@ -1519,6 +1519,30 @@ export function CertificatesAdminPage() {
       margin: 8px 0 14px;
     }
 
+    .admin-cert-preview-qr-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 14px auto;
+    }
+
+    .admin-cert-preview-qr {
+      width: 100px;
+      height: 100px;
+      border: 1px solid #decfaa;
+      border-radius: 8px;
+      padding: 5px;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .admin-cert-preview-qr-label {
+      font-size: 10.5px;
+      color: #7b8e84;
+      margin-top: 5px;
+      font-weight: 600;
+    }
+
     .admin-cert-preview-footer {
       display: flex;
       justify-content: space-between;
@@ -1888,7 +1912,7 @@ export function CertificatesAdminPage() {
             <div className="admin-cert-modal-body">
               <div className="admin-cert-preview-card">
                 <div className="admin-cert-preview-seal">✦</div>
-                <div className="admin-cert-preview-org">Spa Therapist Portal</div>
+                <div className="admin-cert-preview-org">Iris Wellness</div>
                 <div className="admin-cert-preview-title">Certificate of Completion</div>
                 <div className="admin-cert-preview-subtitle">This certificate is proudly presented to</div>
                 <div className="admin-cert-preview-person">
@@ -1897,6 +1921,17 @@ export function CertificatesAdminPage() {
                 <div className="admin-cert-preview-subtitle">for successfully completing the professional course</div>
                 <div className="admin-cert-preview-course">
                   {String(viewingCert.course_title ?? "Course")}
+                </div>
+
+                <div className="admin-cert-preview-qr-wrap">
+                  <img
+                    className="admin-cert-preview-qr"
+                    src={`${API_URL}/api/certificates/qr/${encodeURIComponent(String(viewingCert.certificate_code ?? ""))}`}
+                    alt={`QR code for certificate ${String(viewingCert.certificate_code ?? "")}`}
+                    width="100"
+                    height="100"
+                  />
+                  <span className="admin-cert-preview-qr-label">Scan to verify this certificate</span>
                 </div>
 
                 <div className="admin-cert-preview-footer">
@@ -1908,15 +1943,6 @@ export function CertificatesAdminPage() {
             </div>
 
             <div className="admin-cert-modal-actions">
-              <a
-                className="ac-btn-action view"
-                href={`/certificates/verify/${encodeURIComponent(String(viewingCert.certificate_code ?? ""))}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Public Verify Link ↗
-              </a>
-
               <button
                 type="button"
                 className="ac-btn-action download"

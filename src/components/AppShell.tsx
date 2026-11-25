@@ -38,7 +38,7 @@ export function AppShell() {
   const navigate = useNavigate();
 
   const [collapsed, setCollapsed] = useState(
-    () => localStorage.getItem("spa-sidebar") === "collapsed"
+    () => (localStorage.getItem("iriswellness-sidebar") ?? localStorage.getItem("spa-sidebar")) === "collapsed"
   );
 
   const [open, setOpen] = useState(false);
@@ -48,7 +48,7 @@ export function AppShell() {
 
   useEffect(() => {
     localStorage.setItem(
-      "spa-sidebar",
+      "iriswellness-sidebar",
       collapsed ? "collapsed" : "expanded"
     );
   }, [collapsed]);
@@ -192,7 +192,7 @@ export function AppShell() {
 
         {/* BRAND */}
         <div className="sidebar-brand">
-          <span>Spa Therapist</span>
+          <span>Iris Wellness</span>
           <strong>
             {user?.role === "ADMIN"
               ? "Administration"
